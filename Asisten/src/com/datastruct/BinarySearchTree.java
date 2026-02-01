@@ -20,10 +20,14 @@ public class BinarySearchTree<K extends Comparable<? super K>,V>
     }
 
     public V search(K key) {
-        V info = null;
-        info = getData(find(root,key));
-        return info;
+    V info = null;
+    BTNode<K, V> node = find(root, key);  // pakai BTNode<K,V>
+    if (node != null) {
+        info = getData(node);             // aman, return V
     }
+    return info;
+    }
+
 
     public K max() {
         K kunci = null;
@@ -37,6 +41,8 @@ public class BinarySearchTree<K extends Comparable<? super K>,V>
         return kunci;
     }
 
+    // --- Traversal Methods ---
+    
     public void inOrder() {
         printInOrder(root);
     }
@@ -142,7 +148,7 @@ public class BinarySearchTree<K extends Comparable<? super K>,V>
 
     private BTNode<K,V> find(BTNode<K,V> node, K k) {
         //node adalah subtree (root dari subtree)
-        if(node == null || node.getKey() == k) return node;
+        if (node == null || node.getKey().compareTo(k) == 0) return node;
         else if(node.getKey().compareTo(k) < 0) return find(node.getRlink(), k);
         else return find(node.getLlink(), k);
     }
@@ -160,5 +166,10 @@ public class BinarySearchTree<K extends Comparable<? super K>,V>
             return findMax(node.getRlink());
         }
     }
+    // tambahan: pemanggil inorder per baris
+    public void inOrderPerLine() {
+    printInOrderPerLine(root);
+    }
+
 
 }

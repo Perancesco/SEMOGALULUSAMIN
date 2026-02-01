@@ -44,6 +44,11 @@ package com.datastruct;
     public BTNode<K, V> getRlink() {
         return rlink;
     }
+    @Override
+    public String toString() {
+    return key + " : " + data;
+    }
+
 }
 
 public class BinaryTree<K, V>{
@@ -111,5 +116,14 @@ public class BinaryTree<K, V>{
         //dari node di setiap leve
         printLevelOrderRec(q);
     }
+    // tambahan: inorder tapi satu baris per node
+    void printInOrderPerLine(BTNode node) {
+    if (node != null) {
+        printInOrderPerLine(node.getLlink());
+        System.out.println(node);
+        printInOrderPerLine(node.getRlink());
+    }
+}
+
 }
 
