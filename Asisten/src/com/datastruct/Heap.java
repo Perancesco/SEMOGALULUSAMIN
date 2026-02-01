@@ -168,4 +168,12 @@ public class Heap<K extends Comparable<? super K>,V> {
     {
         arrList.cetakList();
     }
+    // === TAMBAHAN UNTUK APP (SOAL 3) ===
+    // mengembalikan data (V) dari root heap dan menghapus node-nya
+    public V removeFirstData() {
+        BTNode<K,V> n = removeFirst();
+        if (n == null) return null;
+        return n.getData();
+    }
 }
+
