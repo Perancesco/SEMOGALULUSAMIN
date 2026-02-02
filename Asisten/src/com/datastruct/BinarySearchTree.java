@@ -19,6 +19,9 @@ public class BinarySearchTree<K extends Comparable<? super K>,V>
         root = deleteNode(root, key);
     }
 
+    // (Minor changes)
+    // untuk mencegah error ketika data tidak ditemukan. penting untuk dapat melakukan penambahan pelanggan, jika tidak diubah akan
+    // nampilin error "Cannot invoke "com.datastruct.BTNode.getData()" because "node" is null"
     public V search(K key) {
     V info = null;
     BTNode<K, V> node = find(root, key);  // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
@@ -27,7 +30,6 @@ public class BinarySearchTree<K extends Comparable<? super K>,V>
     }
     return info;
     }
-
 
     public K max() {
         K kunci = null;
@@ -167,6 +169,7 @@ public class BinarySearchTree<K extends Comparable<? super K>,V>
         }
     }
     
+    // Tqambahan method
     // Method untuk menampilkan seluruh data pada Binary Search Tree
     // menggunakan traversal inorder dengan satu data per baris.
     public void inOrderPerLine() { // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH

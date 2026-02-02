@@ -40,6 +40,8 @@ public class Graph<T> {
     //Map<T, LinkedList<Edge<T>>> adj;
     private Map<T, MyLinearList<Edge<T>>> adj;
     boolean directed;
+
+    // Penambahan method, untuk dapat generate secara random
     Random rand = new Random(); // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 
     //Constructor, Time O(1) Space O(1)
@@ -50,8 +52,10 @@ public class Graph<T> {
 
     //Add edges including adding nodes, Time O(1) Space O(1)
     public void addEdge(T a, T b, int w) {
+        // Penambahan kondisi baru
+        // Karena soal meminta untuk jarak maksimalnya adalah 15 km sehingga jika melebihi itu, jarak (weight) edge ditolak
         if (w > 15) { // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-            System.out.println("❌ Jarak lebih dari 15 km, edge ditolak!"); // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+            System.out.println(" Jarak jgn lebih dari 15 km, ulangin"); // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
             return; // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
         } // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
         adj.putIfAbsent(a, new MyLinearList<>()); //add node

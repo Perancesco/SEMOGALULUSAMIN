@@ -44,6 +44,9 @@ package com.datastruct;
     public BTNode<K, V> getRlink() {
         return rlink;
     }
+
+    // Penambahan method
+    // menampilkan pasangan key dan data saat objek dicetak, supaya lebih rapi outputnya
     @Override
     public String toString() { // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
     return key + " : " + data; // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
@@ -116,7 +119,9 @@ public class BinaryTree<K, V>{
         //dari node di setiap leve
         printLevelOrderRec(q);
     }
-    // tambahan: inorder tapi satu baris per node
+
+    // Penambahan method
+    // menampilkan output secara inorder tapi satu baris per node, supaya lebih rapi outputnya
     void printInOrderPerLine(BTNode node) { // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
     if (node != null) { // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
         printInOrderPerLine(node.getLlink());// INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH

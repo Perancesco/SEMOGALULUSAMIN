@@ -168,8 +168,10 @@ public class Heap<K extends Comparable<? super K>,V> {
     {
         arrList.cetakList();
     }
-    // === TAMBAHAN UNTUK APP (SOAL 3) ===
-    // mengembalikan data (V) dari root heap dan menghapus node-nya
+    
+    // Penambahan method
+    // mengembalikan data (V) dari root heap dan menghapus node nya dari heap, penting untuk konteks priority queuenya saya, karena
+    // yang prioritas prioritas tertinggi, lalu dihapus node tersebut dari heap
     public V removeFirstData() {  // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
         BTNode<K,V> n = removeFirst(); // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
         if (n == null) return null;// INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
