@@ -30,7 +30,6 @@ class Pelanggan {
     }
 }
 
-// ===== DATA REQUEST CS =====
 class CSRequest {
     String kodePelanggan;
     String nama;
@@ -49,8 +48,9 @@ class CSRequest {
 
 public class App {
 
-    // waktu CS terakhir selesai melayani
     static int waktuCS = 0;
+    // List untuk menyimpan kode pelanggan yang benar-benar masuk antrian CS
+    static MyArrayList<String> validCustomerNodes = new MyArrayList<>(100);
 
     // ================= MENU =================
 
@@ -75,7 +75,7 @@ public class App {
     }
 
     private static void tampilMenuCS() {
-        System.out.println("\n--- MENU ANTRIAN CS ---");
+        System.out.println("\n--- MENU ANTRIAN CS --- (Pastiin untuk run ulang file javanya biar ga error heapnya tiap mau test)");
         System.out.println("1. Tambah ke antrian");
         System.out.println("2. Proses antrian");
         System.out.println("0. Kembali");
@@ -104,25 +104,22 @@ public class App {
         bst.insert("CUS005", new Pelanggan("CUS005", "Eko", "30 Mbps", "Jl. Kenanga 3", 300000));
         bst.insert("CUS006", new Pelanggan("CUS006", "Fajar", "20 Mbps", "Jl. Mawar 10", 250000));
         bst.insert("CUS007", new Pelanggan("CUS007", "Gita", "75 Mbps", "Jl. Dahlia 8", 450000));
-        bst.insert("CUS008", new Pelanggan("CUS008", "Hendra", "10 Mbps", "Jl. Flamboyan 2", 200000));
-        bst.insert("CUS009", new Pelanggan("CUS009", "Intan", "50 Mbps", "Jl. Cempaka 6", 350000));
-        bst.insert("CUS010", new Pelanggan("CUS010", "Joko", "100 Mbps", "Jl. Teratai 12", 500000));
-
     }
 
     /*
-     * Key heap:
-     * - waktu kedatangan sebagai prioritas utama
-     * - nilai prioritas hanya pembanding jika waktu sama
+     * Key heap logic diperbaiki:
+     * - Waktu kedatangan dikalikan 1000 agar jadi faktor utama.
+     * - Nilai prioritas ditambahkan sebagai pemecah kebuntuan (tie-breaker).
+     * Dengan ini, orang yang datang lebih awal SELALU didahulukan. 
+     * Prioritas baru berpengaruh jika waktu datangnya SAMA.
      */
     private static Integer makeKey(int waktuDatang, int prioritas) {
-        return waktuDatang * 100 + prioritas;
+        return (waktuDatang * 1000) + prioritas;
     }
 
     // ================= PROSES CS =================
 
     private static void prosesAntrian(Heap<Integer, CSRequest> pq) {
-
         if (pq.size() == 0) {
             System.out.println("Antrian kosong.");
             return;
@@ -149,9 +146,7 @@ public class App {
     // ================= MAIN =================
 
     public static void main(String[] args) {
-
         Scanner sc = new Scanner(System.in);
-
         BinarySearchTree<String, Pelanggan> bst = new BinarySearchTree<>();
         isiDataAwal(bst);
 
@@ -168,24 +163,53 @@ public class App {
                     do {
                         tampilMenuCRUD();
                         c = Integer.parseInt(sc.nextLine());
-
                         switch (c) {
                             case 1:
                                 System.out.print("Kode: ");
                                 String kode = sc.nextLine();
-                                if (bst.search(kode) != null) {
-                                    System.out.println("Kode sudah ada.");
+                                if (bst.search(kode) != null) System.out.println("Kode sudah ada.");
+                                else bst.insert(kode, inputPelanggan(sc, kode));
+                                break;
+                            case 2:
+                                System.out.print("Masukkan Kode pelanggan yang akan diupdate: ");
+                                String kUp = sc.nextLine();
+                                Pelanggan pUp = bst.search(kUp);
+                                if (pUp == null) {
+                                    System.out.println("Pelanggan tidak ditemukan.");
                                 } else {
-                                    bst.insert(kode, inputPelanggan(sc, kode));
+                                    System.out.println("Data saat ini: " + pUp);
+                                    System.out.println("Masukkan data baru (Kosongkan/Enter jika tidak ingin merubah):");
+                                    
+                                    System.out.print("Nama baru: ");
+                                    String nBaru = sc.nextLine();
+                                    if (!nBaru.isEmpty()) pUp.nama = nBaru;
+
+                                    System.out.print("Paket baru: ");
+                                    String pkBaru = sc.nextLine();
+                                    if (!pkBaru.isEmpty()) pUp.paket = pkBaru;
+
+                                    System.out.print("Alamat baru: ");
+                                    String alBaru = sc.nextLine();
+                                    if (!alBaru.isEmpty()) pUp.alamat = alBaru;
+
+                                    System.out.print("Tagihan baru: ");
+                                    String tgBaru = sc.nextLine();
+                                    if (!tgBaru.isEmpty()) pUp.tagihan = Integer.parseInt(tgBaru);
+
+                                    System.out.println("Data berhasil diperbarui!");
                                 }
                                 break;
-
+                            case 3:
+                                System.out.print("Kode: ");
+                                String kDel = sc.nextLine();
+                                if (bst.search(kDel) == null) System.out.println("Tidak ada.");
+                                else { bst.delete(kDel); System.out.println("Terhapus."); }
+                                break;
                             case 4:
                                 System.out.print("Kode: ");
                                 Pelanggan p = bst.search(sc.nextLine());
                                 System.out.println(p == null ? "Tidak ditemukan" : p);
                                 break;
-
                             case 5:
                                 bst.inOrderPerLine();
                                 break;
@@ -199,7 +223,6 @@ public class App {
                     do {
                         tampilMenuCS();
                         c = Integer.parseInt(sc.nextLine());
-
                         switch (c) {
                             case 1:
                                 System.out.print("Kode pelanggan: ");
@@ -219,6 +242,10 @@ public class App {
 
                                 CSRequest r = new CSRequest(kode, p.nama, datang, prior, durasi);
                                 pq.insert(makeKey(datang, prior), r);
+                                
+                                // Simpan ke daftar valid untuk validasi Graph nanti
+                                validCustomerNodes.add(kode); 
+                                System.out.println("Berhasil masuk antrian.");
                                 break;
 
                             case 2:
@@ -228,9 +255,32 @@ public class App {
                     } while (c != 0);
                     break;
                 }
+
+                case 3: {
+                    if(validCustomerNodes.isEmpty()) {
+                        System.out.println("Belum ada pelanggan yang antri di CS!");
+                        break;
+                    }
+                    System.out.println("\n=== RUTE SURVEYOR (Undirected) ===");
+                    Graph<String> g = new Graph<>(false);
+                    // Kirim validCustomerNodes untuk validasi input
+                    g.inputGraph(sc, validCustomerNodes);
+
+                    String start;
+                    System.out.print("\nPilih start (1 = manual, 2 = random): ");
+                    int pS = Integer.parseInt(sc.nextLine());
+                    if (pS == 1) {
+                        System.out.print("Masukkan node awal: ");
+                        start = sc.nextLine();
+                    } else {
+                        start = g.getRandomStart();
+                        System.out.println("Start random: " + start);
+                    }
+                    g.dijkstra(start);
+                    break;
+                }
             }
         } while (pilih != 0);
-
         sc.close();
     }
 }
