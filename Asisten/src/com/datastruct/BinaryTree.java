@@ -45,9 +45,9 @@ package com.datastruct;
         return rlink;
     }
     @Override
-    public String toString() {
-    return key + " : " + data;
-    }
+    public String toString() { // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+    return key + " : " + data; // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+    } // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 
 }
 
@@ -117,11 +117,11 @@ public class BinaryTree<K, V>{
         printLevelOrderRec(q);
     }
     // tambahan: inorder tapi satu baris per node
-    void printInOrderPerLine(BTNode node) {
-    if (node != null) {
-        printInOrderPerLine(node.getLlink());
-        System.out.println(node);
-        printInOrderPerLine(node.getRlink());
+    void printInOrderPerLine(BTNode node) { // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+    if (node != null) { // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+        printInOrderPerLine(node.getLlink());// INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+        System.out.println(node);// INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+        printInOrderPerLine(node.getRlink());// INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
     }
 }
 

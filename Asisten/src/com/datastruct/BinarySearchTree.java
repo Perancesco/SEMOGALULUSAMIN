@@ -21,9 +21,9 @@ public class BinarySearchTree<K extends Comparable<? super K>,V>
 
     public V search(K key) {
     V info = null;
-    BTNode<K, V> node = find(root, key);  // pakai BTNode<K,V>
+    BTNode<K, V> node = find(root, key);  // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
     if (node != null) {
-        info = getData(node);             // aman, return V
+        info = getData(node);             // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
     }
     return info;
     }
@@ -166,10 +166,11 @@ public class BinarySearchTree<K extends Comparable<? super K>,V>
             return findMax(node.getRlink());
         }
     }
-    // tambahan: pemanggil inorder per baris
-    public void inOrderPerLine() {
-    printInOrderPerLine(root);
+    
+    // Method untuk menampilkan seluruh data pada Binary Search Tree
+    // menggunakan traversal inorder dengan satu data per baris.
+    public void inOrderPerLine() { // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+    printInOrderPerLine(root); // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
     }
-
 
 }

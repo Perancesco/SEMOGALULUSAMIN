@@ -312,9 +312,27 @@ public class App {
                 }
 
                 case 3: {
-                    System.out.println("\n[Fitur rute surveyor (Graph) belum diisi.]");
+                    System.out.println("\n=== RUTE SURVEYOR ===");
+
+                    Graph<String> g = new Graph<>(false);
+                    g.inputGraph(sc);
+
+                    System.out.print("\nPilih start (1 = manual, 2 = random): ");
+                    int pilihStart = Integer.parseInt(sc.nextLine());
+
+                    String start;
+                    if (pilihStart == 1) {
+                        System.out.print("Masukkan node awal: ");
+                        start = sc.nextLine();
+                    } else {
+                        start = g.getRandomStart();
+                        System.out.println("Start random: " + start);
+                    }
+
+                    g.dijkstra(start);
                     break;
                 }
+
 
                 case 0: {
                     System.out.println("Keluar program.");
