@@ -1,12 +1,17 @@
 package com.datastruct;
-/* * Struktur data Graph dengan bobot pada setiap edge
+/* 
+ * Struktur data Graph dengan bobot pada setiap edge
+ * sources: https://www.lavivienpost.net/weighted-graph-as-adjacency-list/  
+ * 
  */
+
 import java.util.*;
 
 class Edge<T> {
-    private T neighbor; 
-    private int weight; 
+    private T neighbor; //connected vertex
+    private int weight; //weight
 
+    //Constructor, Time O(1) Space O(1)
     public Edge(T n, int w) {
         neighbor = n;
         weight = w;
@@ -25,6 +30,7 @@ class Edge<T> {
         return weight;
     }
 
+    //Time O(1) Space O(1)
     @Override
     public String toString() {
         return "(" + neighbor + "," + weight + "km)";
@@ -32,28 +38,56 @@ class Edge<T> {
 }
 
 public class Graph<T> {
+    //Map<T, LinkedList<Edge<T>>> adj;
     private Map<T, MyLinearList<Edge<T>>> adj;
     boolean directed;
-    Random rand = new Random(); 
+    // Inisialisasi random untuk penentuan secara acak
+    Random rand = new Random(); // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 
+    //Constructor, Time O(1) Space O(1)
     public Graph(boolean type) {
         adj = new HashMap<>();
-        directed = type; 
+        directed = type; // false: undirected, true: directed
     }
 
+    //Add edges including adding nodes, Time O(1) Space O(1)
     public void addEdge(T a, T b, int w) {
         // Validasi jarak maksimal 15 km
-        if (w > 15) { 
-            System.out.println(" Jarak jgn lebih dari 15 km!"); 
-            return; 
+        if (w > 15) { // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+            System.out.println(" Jarak jgn lebih dari 15 km!"); // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+            return; // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
         } 
-        adj.putIfAbsent(a, new MyLinearList<>()); 
-        adj.putIfAbsent(b, new MyLinearList<>()); 
+        adj.putIfAbsent(a, new MyLinearList<>()); //add node
+        adj.putIfAbsent(b, new MyLinearList<>()); //add node
 
-        adj.get(a).pushQ(new Edge<>(b, w)); 
-        if (!directed) 
+        adj.get(a).pushQ(new Edge<>(b, w)); //add(edge1); //add edge
+        if (!directed) //undirected
             adj.get(b).pushQ(new Edge<>(a, w)); 
     }
+    //Print graph as hashmap, Time O(V+E), Space O(1)
+	public void printGraph() {
+		for (T key: adj.keySet()) {
+			//System.out.println(key.toString() + " : " + adj.get(key).toString());
+            System.out.print(key.toString() + " : ");
+			MyLinearList<Edge<T>> thelist = adj.get(key);
+			Node<Edge<T>> curr = thelist.head;
+			while(curr != null) {
+				System.out.print(curr.getData());
+				curr = curr.getNext();
+			}
+			System.out.println();
+		}
+	}
+
+	//DFS 
+	public void DFS(T src) {
+		
+	}
+
+	//BFS
+	public void BFS(T src) { 
+		 
+	}
 
     // ================= INPUT GRAPH VIA SCANNER =================
     // Menambahkan parameter validNodes agar surveyor cuma bisa mengunjungi yang ada di antrian

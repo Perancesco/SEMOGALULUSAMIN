@@ -9,6 +9,7 @@ import com.datastruct.*;
  * - Rute surveyor  : Graph
  */
 
+// Model buat nyimpen request yang masuk ke CS
 class Pelanggan {
     String kode;
     String nama;
@@ -30,6 +31,7 @@ class Pelanggan {
     }
 }
 
+// Model buat nyimpen request yang masuk ke CS (NOMOR 3 ANTRIAN CS)
 class CSRequest {
     String kodePelanggan;
     String nama;
@@ -48,12 +50,14 @@ class CSRequest {
 
 public class App {
 
+    // variabel buat mantau kapan CS selesai melayani pelanggan terakhir, penentuan waktu tunggu
     static int waktuCS = 0;
-    // List untuk menyimpan kode pelanggan yang benar-benar masuk antrian CS
+    // validasi CUS berdasarkan list customer
     static MyArrayList<String> validCustomerNodes = new MyArrayList<>(100);
 
     // ================= MENU =================
 
+    // ================= Tampilan MENU Utama =================
     private static void tampilMenuUtama() {
         System.out.println("\n=== MENU UTAMA ISP ===");
         System.out.println("1. Kelola Data Pelanggan (BST)");
@@ -62,7 +66,7 @@ public class App {
         System.out.println("0. Keluar");
         System.out.print("Pilih menu: ");
     }
-
+    // ================= Tampilan MENU CRUD (NOMOR 2) =================
     private static void tampilMenuCRUD() {
         System.out.println("\n--- MENU CRUD PELANGGAN ---");
         System.out.println("1. Tambah pelanggan");
@@ -73,7 +77,8 @@ public class App {
         System.out.println("0. Kembali");
         System.out.print("Pilih: ");
     }
-
+    
+    // ================= Tampilan MENU ANTRIAN CS (NOMOR 3) =================
     private static void tampilMenuCS() {
         System.out.println("\n--- MENU ANTRIAN CS --- (Pastiin untuk run ulang file javanya biar ga error heapnya tiap mau test)");
         System.out.println("1. Tambah ke antrian");
