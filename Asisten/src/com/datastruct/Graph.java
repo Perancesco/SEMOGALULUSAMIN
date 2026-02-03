@@ -60,7 +60,7 @@ public class Graph<T> {
         adj.putIfAbsent(a, new MyLinearList<>()); //add node
         adj.putIfAbsent(b, new MyLinearList<>()); //add node
 
-        adj.get(a).pushQ(new Edge<>(b, w)); //add(edge1); //add edge
+        adj.get(a).pushQ(new Edge<>(b, w)); //add(edge1); //add edge // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH dikit
         if (!directed) //undirected
             adj.get(b).pushQ(new Edge<>(a, w)); 
     }
@@ -89,11 +89,20 @@ public class Graph<T> {
 		 
 	}
 
+    // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+    // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+    // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+    // INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+    // SEMUA KEBAWAH INI DIUBAHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+
     // ================= INPUT GRAPH VIA SCANNER =================
-    // Menambahkan parameter validNodes agar surveyor cuma bisa mengunjungi yang ada di antrian
+    // User mengisi sendiri edge dari masing masing node supaya dapat bisa beneran diperlakukan di dunia nyata
+    // awalnya saya kepikiran untuk menggunakan koordinat tapi dikarenakan koordinat belum pernah diajarkan jadi saya pake cara
+    // biasa saja yaitu edge ke edge menggunakan add edge (sesuai rpaktikum)
+    // surveyor cuma bisa mengunjungi yang ada di antrian CS Case 2 (NOmor 3)
     public void inputGraph(Scanner sc, MyArrayList<String> validNodes) {
 
-        System.out.print("Jumlah edge: ");
+        System.out.print("Jumlah edge: "); // Edge = rute angar pelanggan berisfat undirected jadi bisa bolak-balik
         int e = Integer.parseInt(sc.nextLine());
 
         System.out.print("Mode jarak (1 = manual, 2 = random): ");
@@ -103,38 +112,38 @@ public class Graph<T> {
             System.out.println("\nEdge ke-" + (i + 1));
             
             T a, b;
-            // Validasi Node A harus ada di daftar antrian CS
+            // untuk valalidasi Node A harus ada di daftar antrian CS
             while (true) {
-                System.out.print("Node A (Kode Pelanggan): ");
-                a = (T) sc.nextLine();
+                System.out.print("Node A (Kode Pelanggan seperti CUS001, CUS002, DLL, harus yang ada di antrian CS): ");
+                a = (T) sc.nextLine(); //input node A
                 boolean valid = false;
                 for(int j=0; j<validNodes.size(); j++) {
-                    if(validNodes.get(j).equals(a)) { valid = true; break; }
+                    if(validNodes.get(j).equals(a)) { valid = true; break; } // pengecekan validiats nya apakah ada di antrian CS atau tdk
                 }
                 if(valid) break;
-                System.out.println("Error: Kode " + a + " tidak ditemukan dalam antrian CS!");
+                System.out.println("Error: Kode " + a + " tidak ditemukan dalam antrian CS!"); //kalo ga ada di antrain cs
             }
 
-            // Validasi Node B harus ada di daftar antrian CS
+            // untuk validasi Node B harus ada di daftar antrian CS
             while (true) {
-                System.out.print("Node B (Kode Pelanggan): ");
-                b = (T) sc.nextLine();
+                System.out.print("Node B (Kode Pelanggan seperti CUS001, CUS002, DLL, harus yang ada di antrian CS): ");
+                b = (T) sc.nextLine(); // input node B
                 boolean valid = false;
                 for(int j=0; j<validNodes.size(); j++) {
                     if(validNodes.get(j).equals(b)) { valid = true; break; }
                 }
                 if(valid) break;
-                System.out.println("Error: Kode " + b + " tidak ditemukan dalam antrian CS!");
+                System.out.println("Error: Kode " + b + " tidak ditemukan dalam antrian CS!"); //kalo ga ada di antrain cs
             }
 
             int w = 0;
             if (mode == 1) {
-                // Perbaikan: Jika lebih dari 15km, harus mengulangi input (bukan skip)
+                // INPUT JARAK HARUS mentok 15 km kalo, ga ya input ulang
                 while (true) {
                     System.out.print("Jarak (1-15 km): ");
                     w = Integer.parseInt(sc.nextLine());
-                    if (w <= 15) break;
-                    System.out.println("Error: Jarak maksimal adalah 15 km. Ulangi!");
+                    if (w <= 15) break; // kalo misalnya si user input jarak udah bener
+                    System.out.println("Error: Jarak maksimal adalah 15 km. Ulangi!"); //kalo misalnya si user input jarak lebih dari 15 km
                 }
             } else {
                 w = rand.nextInt(15) + 1;
@@ -144,17 +153,23 @@ public class Graph<T> {
             addEdge(a, b, w);
         }
     }
-
+    // kalo user pilihnya startnya secara random
     public T getRandomStart() {
         if (adj.isEmpty()) return null;
         int idx = rand.nextInt(adj.size());
-        return new ArrayList<>(adj.keySet()).get(idx);
+        int i = 0;
+        for (T key : adj.keySet()) {
+            if (i == idx) return key;
+            i++;
+        }
+        return null;
     }
 
     // ================= DIJKSTRA =================
     public void dijkstra(T start) {
-        if (start == null) { System.out.println("Graph kosong!"); return; }
-        Map<T, Integer> dist = new HashMap<>();
+        if (start == null) { System.out.println("Graph kosong!"); return; } 
+        // pake hashmap buat nyimpen jarak terpendek (pernah diimplementasi di praktikum jadi saya anggap boleh)
+        Map<T, Integer> dist = new HashMap<>(); 
         Map<T, T> prev = new HashMap<>();
 
         for (T v : adj.keySet()) {
@@ -163,52 +178,74 @@ public class Graph<T> {
         }
 
         dist.put(start, 0);
+        MyArrayList<T> queue = new MyArrayList<>(100);
+        queue.add(start);
+        // selama queunya ga empty bakal bisa dijalanin
+        while (!queue.isEmpty()) {
+            T curr = null;
+            int minVal = Integer.MAX_VALUE;
+            int minIdx = -1;
+            // cari node dengan jarak terpendek di queue
+            for (int i = 0; i < queue.size(); i++) {
+                T node = queue.get(i);
+                int d = dist.get(node);
+                if (d < minVal) { // kalo jarak ke node itu lebih kecil dari minVal
+                    minVal = d;
+                    curr = node;
+                    minIdx = i;
+                }
+            }
 
-        PriorityQueue<T> pq = new PriorityQueue<>(Comparator.comparingInt(dist::get));
-        pq.add(start);
-
-        while (!pq.isEmpty()) {
-            T curr = pq.poll();
-
+            // Hapus node yang terpilih dari queue menggunakan method remove(index) dari MyArrayList
+            if (minIdx != -1) {
+                queue.remove(minIdx);
+            } else {
+                break;
+            }
+            // periksa tetangga dari node saat ini
             Node<Edge<T>> node = adj.get(curr).head;
-            while (node != null) {
+            while (node != null) { // iterasi semua tetangga
                 Edge<T> e = node.getData();
                 T neigh = e.getNeighbor();
 
-                int newDist = dist.get(curr) + e.getWeight();
+                int newDist = dist.get(curr) + e.getWeight(); // jarak baru
                 if (newDist < dist.get(neigh)) {
-                    dist.put(neigh, newDist);
+                    dist.put(neigh, newDist); 
                     prev.put(neigh, curr);
-                    pq.add(neigh);
+                    
+                    // Masukkan ke queue (MyArrayList)
+                    queue.add(neigh);
                 }
-                node = node.getNext();
+                node = node.getNext(); // next tetangga
             }
         }
 
         System.out.println("\n=== HASIL JALUR TERPENDEK SURVEYOR ===");
-        System.out.println("Mulai dari: " + start);
+        System.out.println("Mulai dari: " + start); // titik awal ke semua titik lainya 
 
         for (T v : adj.keySet()) {
             if (dist.get(v) == Integer.MAX_VALUE) {
-                System.out.println("Ke " + v + ": Tidak terjangkau");
+                System.out.println("Ke " + v + ": Tidak terjangkau"); // kalo ga ada jalur ke titik tersebut 
             } else {
                 System.out.print("Ke " + v + " (" + dist.get(v) + " km): ");
                 printPath(prev, v);
+                System.out.println();
             }
         }
     }
 
+// Nampilin path dari start ke vertex lain pake car reksurif
     private void printPath(Map<T, T> prev, T v) {
-        Stack<T> s = new Stack<>();
-        T temp = v;
-        while (temp != null) {
-            s.push(temp);
-            temp = prev.get(temp);
+        // Base case: jika v adalah start node (prev-nya null)
+        if (prev.get(v) == null) {
+            System.out.print(v);
+            return;
         }
-        while (!s.isEmpty()) {
-            System.out.print(s.pop());
-            if (!s.isEmpty()) System.out.print(" -> ");
-        }
-        System.out.println();
+
+        // Panggil rekursi untuk print node sebelumnya dulu
+        printPath(prev, prev.get(v));
+
+        // Print node saat ini setelah kembali dari rekursi
+        System.out.print(" -> " + v);
     }
 }

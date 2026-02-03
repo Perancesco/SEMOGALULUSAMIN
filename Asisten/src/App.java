@@ -2,12 +2,27 @@ import java.util.Scanner;
 import com.datastruct.*;
 
 /*
- * === TEST ASISTEN DATA STRUCTURE ===
- * Studi kasus : Internet Service Provider (ISP)
- * - CRUD pelanggan : Binary Search Tree
- * - Antrian CS     : Priority Queue (Heap Min)
- * - Rute surveyor  : Graph
- */
+Nama: Francesco Alexander
+NIM: 535240156
+Mata Kuliah: Data Structure
+Tema: Asisten Dosen Data Structure
+*/
+
+/*
+File yang diubah:
+BinarySearchTree.java ( sedikit perubahan, menambahkan method getter supaya bisa akses key dan data dari App.java + print supaya rapi)
+BinaryTree.java (sedikit perubahan, menambahkan method print supaya bisa print pasangan key dan data dengan rapi)
+Heap.java (perubahan penting, menambahkan method removefirst untuk konteks priority queue saya)
+Graph.java (Banyak perubahan penting, intinya banyak banget supaya graph shortest path dapat beneran bisa bekerja)
+App.java (sebagai main tentu saja pasti diubah)
+*/
+
+/*
+Internet Service Provider (ISP)
+ - CRUD : Binary Search Tree
+ - Antrian CS     : Priority Queue (Heap)
+ - Rute surveyor  : Graph (Undirected)
+*/
 
 // Model buat nyimpen request yang masuk ke CS
 class Pelanggan {
@@ -17,6 +32,7 @@ class Pelanggan {
     String alamat;
     int tagihan;
 
+    // 5 TAMBAHAN INFORMASI SESUAI DENGAN KETENTUAN NOMOR 1 k(ode, Nama, paket, alamat, tagihan)
     Pelanggan(String kode, String nama, String paket, String alamat, int tagihan) {
         this.kode = kode;
         this.nama = nama;
@@ -87,7 +103,7 @@ public class App {
         System.out.print("Pilih: ");
     }
 
-    // ================= UTIL =================
+    // ================= Input pelanggan (CRUD) =================
 
     private static Pelanggan inputPelanggan(Scanner sc, String kode) {
         System.out.print("Nama        : ");
@@ -101,6 +117,9 @@ public class App {
         return new Pelanggan(kode, nama, paket, alamat, tagihan);
     }
 
+    // ================= Beberapa preset data awal =================
+    // Data terdiri dari Kode (Primary Key)
+    // Nama (STRING), Paket (STRING), Alamat (STRING), Tagihan (INT)
     private static void isiDataAwal(BinarySearchTree<String, Pelanggan> bst) {
         bst.insert("CUS001", new Pelanggan("CUS001", "Andi", "20 Mbps", "Jl. Merdeka 1", 250000));
         bst.insert("CUS002", new Pelanggan("CUS002", "Budi", "50 Mbps", "Jl. Merdeka 2", 350000));
@@ -111,26 +130,18 @@ public class App {
         bst.insert("CUS007", new Pelanggan("CUS007", "Gita", "75 Mbps", "Jl. Dahlia 8", 450000));
     }
 
-    /*
-     * Key heap logic diperbaiki:
-     * - Waktu kedatangan dikalikan 1000 agar jadi faktor utama.
-     * - Nilai prioritas ditambahkan sebagai pemecah kebuntuan (tie-breaker).
-     * Dengan ini, orang yang datang lebih awal SELALU didahulukan. 
-     * Prioritas baru berpengaruh jika waktu datangnya SAMA.
-     */
     private static Integer makeKey(int waktuDatang, int prioritas) {
         return (waktuDatang * 1000) + prioritas;
     }
 
-    // ================= PROSES CS =================
-
+    // ================= PROSES ANTRIAN CS =================
     private static void prosesAntrian(Heap<Integer, CSRequest> pq) {
         if (pq.size() == 0) {
             System.out.println("Antrian kosong.");
             return;
         }
-
-        System.out.printf("%-7s | %-6s | %-5s | %-9s | %-7s | %-10s%n",
+        // print dengan format supaya rapi 
+        System.out.printf("%-7s | %-6s | %-5s | %-9s | %-7s | %-10s%n", 
                 "Datang", "Tunggu", "Mulai", "Prioritas", "Kode", "Nama");
 
         while (pq.size() > 0) {
@@ -139,7 +150,7 @@ public class App {
 
             int mulai = Math.max(waktuCS, r.waktuKedatangan);
             int tunggu = mulai - r.waktuKedatangan;
-
+            // print dengan format supaya rapi 
             System.out.printf("%-7d | %-6d | %-5d | %-9d | %-7s | %-10s%n",
                     r.waktuKedatangan, tunggu, mulai,
                     r.prioritas, r.kodePelanggan, r.nama);
@@ -156,13 +167,13 @@ public class App {
         isiDataAwal(bst);
 
         Heap<Integer, CSRequest> pq = new Heap<>(100, true);
-
         int pilih;
         do {
             tampilMenuUtama();
             pilih = Integer.parseInt(sc.nextLine());
 
             switch (pilih) {
+                //================= CASE 1 CRUD PELANGGAN (NOMOR 2) =================
                 case 1: {
                     int c;
                     do {
@@ -170,51 +181,57 @@ public class App {
                         c = Integer.parseInt(sc.nextLine());
                         switch (c) {
                             case 1:
+                            // CASE 1.1 Menu CRUD untuk tambah pelanggan
                                 System.out.print("Kode: ");
                                 String kode = sc.nextLine();
-                                if (bst.search(kode) != null) System.out.println("Kode sudah ada.");
+                                if (bst.search(kode) != null) System.out.println("Kode sudah ada."); // andai user ketik kode yang udah ada di database
                                 else bst.insert(kode, inputPelanggan(sc, kode));
                                 break;
+                            // CASE 1.2 Menu CRUD untuk update pelanggan
                             case 2:
-                                System.out.print("Masukkan Kode pelanggan yang akan diupdate: ");
+                                System.out.print("Masukkan Kode pelanggan yang akan diupdate: "); //harus yang ada di database
                                 String kUp = sc.nextLine();
                                 Pelanggan pUp = bst.search(kUp);
                                 if (pUp == null) {
                                     System.out.println("Pelanggan tidak ditemukan.");
                                 } else {
-                                    System.out.println("Data saat ini: " + pUp);
+                                    System.out.println("Data saat ini: " + pUp); // Nunjukkin data saat ini sebelum diubah (pada kode tersebut)
+                                    // minta input data baru 1 per 1 
                                     System.out.println("Masukkan data baru (Kosongkan/Enter jika tidak ingin merubah):");
-                                    
+                                    // ganti jadid atabaru sesuai inputan user
                                     System.out.print("Nama baru: ");
                                     String nBaru = sc.nextLine();
-                                    if (!nBaru.isEmpty()) pUp.nama = nBaru;
+                                    if (!nBaru.isEmpty()) pUp.nama = nBaru; //nama baru
 
                                     System.out.print("Paket baru: ");
                                     String pkBaru = sc.nextLine();
-                                    if (!pkBaru.isEmpty()) pUp.paket = pkBaru;
+                                    if (!pkBaru.isEmpty()) pUp.paket = pkBaru; //paket begru
 
                                     System.out.print("Alamat baru: ");
                                     String alBaru = sc.nextLine();
-                                    if (!alBaru.isEmpty()) pUp.alamat = alBaru;
+                                    if (!alBaru.isEmpty()) pUp.alamat = alBaru; //alamtat aru
 
                                     System.out.print("Tagihan baru: ");
                                     String tgBaru = sc.nextLine();
-                                    if (!tgBaru.isEmpty()) pUp.tagihan = Integer.parseInt(tgBaru);
+                                    if (!tgBaru.isEmpty()) pUp.tagihan = Integer.parseInt(tgBaru); //tagihan baru
 
                                     System.out.println("Data berhasil diperbarui!");
                                 }
                                 break;
+                            // CASE 1.3 Menu CRUD untuk delete pelanggan
                             case 3:
                                 System.out.print("Kode: ");
                                 String kDel = sc.nextLine();
                                 if (bst.search(kDel) == null) System.out.println("Tidak ada.");
                                 else { bst.delete(kDel); System.out.println("Terhapus."); }
                                 break;
+                            // CASE 1.4 Menu CRUD untuk cari (search) pelanggan
                             case 4:
                                 System.out.print("Kode: ");
                                 Pelanggan p = bst.search(sc.nextLine());
                                 System.out.println(p == null ? "Tidak ditemukan" : p);
                                 break;
+                            // CASE 1.5 Menu CRUD untuk menampilkan semua pelanggan (in-order)
                             case 5:
                                 bst.inOrderPerLine();
                                 break;
@@ -222,7 +239,7 @@ public class App {
                     } while (c != 0);
                     break;
                 }
-
+                //================= CASE 2 ANTRIAN CS (NOMOR 3) =================
                 case 2: {
                     int c;
                     do {
@@ -238,17 +255,17 @@ public class App {
                                     break;
                                 }
 
-                                System.out.print("Waktu datang: ");
+                                System.out.print("Waktu datang (Menit): ");
                                 int datang = Integer.parseInt(sc.nextLine());
-                                System.out.print("Prioritas: ");
+                                // cara kerja prioritas: yang prioritas lebih kecil akan diutamakan (1 lebih diutamakan dari 2, dst)
+                                // tetapi bila walaupun prioritas lebih kecil, jika waktu datangnya lebih lama istihalahnya, 
+                                // maka yang datang duluan akan diutamakan (menurut saya paking make sense seperti itu)
+                                System.out.print("Prioritas (Lbh kecil = lbh diutamakan (berlaku jika dtg di menit yang sama doang) ): ");
                                 int prior = Integer.parseInt(sc.nextLine());
-                                System.out.print("Durasi: ");
+                                System.out.print("Durasi (Menit): ");
                                 int durasi = Integer.parseInt(sc.nextLine());
-
                                 CSRequest r = new CSRequest(kode, p.nama, datang, prior, durasi);
                                 pq.insert(makeKey(datang, prior), r);
-                                
-                                // Simpan ke daftar valid untuk validasi Graph nanti
                                 validCustomerNodes.add(kode); 
                                 System.out.println("Berhasil masuk antrian.");
                                 break;
@@ -260,7 +277,7 @@ public class App {
                     } while (c != 0);
                     break;
                 }
-
+                //================= CASE 3 CRUD PELANGGAN (NOMOR 4) =================
                 case 3: {
                     if(validCustomerNodes.isEmpty()) {
                         System.out.println("Belum ada pelanggan yang antri di CS!");
@@ -268,16 +285,17 @@ public class App {
                     }
                     System.out.println("\n=== RUTE SURVEYOR (Undirected) ===");
                     Graph<String> g = new Graph<>(false);
-                    // Kirim validCustomerNodes untuk validasi input
+                    // Kirim validCustomerNodes untuk validasi input (supaya customer yang bisa dipilih cuma yang ada di antrian CS)
                     g.inputGraph(sc, validCustomerNodes);
 
                     String start;
+                    // Penentuan titik awal, maunya pilih sendiri atau acak saja 
                     System.out.print("\nPilih start (1 = manual, 2 = random): ");
                     int pS = Integer.parseInt(sc.nextLine());
-                    if (pS == 1) {
+                    if (pS == 1) { // manual
                         System.out.print("Masukkan node awal: ");
                         start = sc.nextLine();
-                    } else {
+                    } else { // random
                         start = g.getRandomStart();
                         System.out.println("Start random: " + start);
                     }
